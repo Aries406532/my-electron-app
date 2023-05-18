@@ -1,4 +1,4 @@
-const { app, BrowserWindow,  ipcMain } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require('path')
 // 热加载
 const reloader = require("electron-reloader");
@@ -28,10 +28,21 @@ const createWindow = () => {
 
 };
 
+async function handleFileOpen() {
+  const { canceled, filePaths } = await dialog.showOpenDialog()
+  if (canceled) {
+    return
+  } else {
+    return filePaths[0]
+  }
+}
+
 //这段程序将会在 Electron 结束化
 //和创建浏览器窗口的时候调用
 //部分 API 在 ready 事件触发后才使用
 app.whenReady().then(() => {
+  ipcMain.handle('dialog:openFile', handleFileOpen)
+
   createWindow();
 
   app.on("activate", () => {
