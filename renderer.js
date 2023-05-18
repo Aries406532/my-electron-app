@@ -21,3 +21,9 @@ window.electronAPI.handleCounter((event, value) => {
   counter.innerText = newValue
   event.sender.send('counter-value', newValue)
 })
+
+const create = document.getElementById('create')
+
+create.addEventListener('click', () => {
+  window.electronAPI.create(title)
+});

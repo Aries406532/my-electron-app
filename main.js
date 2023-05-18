@@ -20,6 +20,17 @@ const createWindow = () => {
     win.setTitle(title);
   });
 
+  ipcMain.on("create", () => {
+    const child = new BrowserWindow({  
+      width: 400,
+      height: 400,
+      frame:false,
+      parent: win
+    });
+    //加载文件
+    child.loadFile("child.html");
+  });
+
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
@@ -59,9 +70,9 @@ async function handleFileOpen() {
 //部分 API 在 ready 事件触发后才使用
 app.whenReady().then(() => {
   ipcMain.handle("dialog:openFile", handleFileOpen);
-  ipcMain.on('counter-value', (_event, value) => {
-    console.log(value) // 将打印到 Node 控制台
-  })
+  ipcMain.on("counter-value", (_event, value) => {
+    console.log(value); // 将打印到 Node 控制台
+  });
   createWindow();
 
   app.on("activate", () => {
