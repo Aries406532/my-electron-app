@@ -1,7 +1,7 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 // 热加载
-const reloader = require('electron-reloader')
-reloader(module)
+const reloader = require("electron-reloader");
+reloader(module);
 
 const createWindow = () => {
   //创建浏览器窗口指定高和宽度
@@ -14,6 +14,26 @@ const createWindow = () => {
 
   // 直接打开 调试 或者 ctrl+shift+i 、 mac 调试用 openDevTools
   // win.webContents.openDevTools();
+
+  // 自定义模板 - 菜单栏
+  const template = [
+    {
+      label: "文件",
+      submenu: [
+        {
+          label: "新建窗口",
+        },
+      ],
+    },
+    {
+      label: "关于",
+    },
+  ];
+  // 编译模板
+  const menu = Menu.buildFromTemplate(template);
+
+  // 设置菜单
+  Menu.setApplicationMenu(menu);
 };
 
 //这段程序将会在 Electron 结束化
@@ -31,7 +51,7 @@ app.whenReady().then(() => {
   });
 });
 // 除了 macOS 外，当所有窗口都被关闭的时候退出程序。 因此, 通常
-// 对应用程序和它们的菜单栏来说应该时刻保持激活状态, 
+// 对应用程序和它们的菜单栏来说应该时刻保持激活状态,
 // 直到用户使用 Cmd + Q 明确退出
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
