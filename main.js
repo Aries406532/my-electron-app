@@ -123,6 +123,14 @@ const createWindow = () => {
             await shell.openExternal("https://electronjs.org");
           },
         },
+        {
+          label: "Console",
+          accelerator:
+            process.platform === "darwin" ? "Alt+Cmd+O" : "Alt+Shift+O",
+          click: () => {
+            console.log("Learn More");
+          },
+        },
       ],
     },
   ];
