@@ -1,7 +1,10 @@
 const { app, BrowserWindow } = require("electron");
+// 热加载
+const reloader = require('electron-reloader')
+reloader(module)
 
 const createWindow = () => {
-  //创建浏览器窗口
+  //创建浏览器窗口指定高和宽度
   const win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -9,8 +12,8 @@ const createWindow = () => {
   //加载文件
   win.loadFile("index.html");
 
-  // 打开开发工具
-  win.webContents.openDevTools();
+  // 直接打开 调试 或者 ctrl+shift+i 、 mac 调试用 openDevTools
+  // win.webContents.openDevTools();
 };
 
 //这段程序将会在 Electron 结束化
