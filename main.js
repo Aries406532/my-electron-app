@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow,  ipcMain } = require("electron");
+const path = require('path')
 // 热加载
 const reloader = require("electron-reloader");
 reloader(module);
@@ -8,131 +9,23 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    frame: false
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
   });
+
+  ipcMain.on('set-title', (event, title) => {
+    const webContents = event.sender
+    const win = BrowserWindow.fromWebContents(webContents)
+    win.setTitle(title)
+  })
 
   //加载文件
   win.loadFile("index.html");
 
   // 直接打开 调试 或者 ctrl+shift+i 、 mac 调试用 openDevTools
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
-  // 自定义模板 - 菜单栏
-  // const template = [
-  //   {
-  //     label: "文件",
-  //     submenu: [
-  //       {
-  //         label: "新建"
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     label: "关于",
-  //   },
-  // ];
-
-  const isMac = process.platform === "darwin";
-
-  const template = [
-    // { role: 'appMenu' }
-    ...(isMac
-      ? [
-          {
-            label: app.name,
-            submenu: [
-              { role: "about" },
-              { type: "separator" },
-              { role: "services" },
-              { type: "separator" },
-              { role: "hide" },
-              { role: "hideOthers" },
-              { role: "unhide" },
-              { type: "separator" },
-              { role: "quit" },
-            ],
-          },
-        ]
-      : []),
-    // { role: 'fileMenu' }
-    {
-      label: "File",
-      submenu: [isMac ? { role: "close" } : { role: "quit" }],
-    },
-    // { role: 'editMenu' }
-    {
-      label: "Edit",
-      submenu: [
-        { role: "undo" },
-        { role: "redo" },
-        { type: "separator" },
-        { role: "cut" },
-        { role: "copy" },
-        { role: "paste" },
-        ...(isMac
-          ? [
-              { role: "pasteAndMatchStyle" },
-              { role: "delete" },
-              { role: "selectAll" },
-              { type: "separator" },
-              {
-                label: "Speech",
-                submenu: [{ role: "startSpeaking" }, { role: "stopSpeaking" }],
-              },
-            ]
-          : [{ role: "delete" }, { type: "separator" }, { role: "selectAll" }]),
-      ],
-    },
-    // { role: 'viewMenu' }
-    {
-      label: "View",
-      submenu: [
-        { role: "reload" },
-        { role: "forceReload" },
-        { role: "toggleDevTools" },
-        { type: "separator" },
-        { role: "resetZoom" },
-        { role: "zoomIn" },
-        { role: "zoomOut" },
-        { type: "separator" },
-        { role: "togglefullscreen" },
-      ],
-    },
-    // { role: 'windowMenu' }
-    {
-      label: "Window",
-      submenu: [
-        { role: "minimize" },
-        { role: "zoom" },
-        ...(isMac
-          ? [
-              { type: "separator" },
-              { role: "front" },
-              { type: "separator" },
-              { role: "window" },
-            ]
-          : [{ role: "close" }]),
-      ],
-    },
-    {
-      role: "help",
-      submenu: [
-        {
-          label: "Learn More",
-          click: async () => {
-            const { shell } = require("electron");
-            await shell.openExternal("https://electronjs.org");
-          },
-        },
-      ],
-    },
-  ];
-
-  // 编译模板
-  const menu = Menu.buildFromTemplate(template);
-
-  // 设置菜单
-  Menu.setApplicationMenu(menu);
 };
 
 //这段程序将会在 Electron 结束化
