@@ -1,5 +1,5 @@
-const { app, BrowserWindow, dialog, ipcMain } = require("electron");
-const path = require('path')
+const { app, BrowserWindow, dialog, ipcMain, Menu } = require("electron");
+const path = require("path");
 // 热加载
 const reloader = require("electron-reloader");
 reloader(module);
@@ -10,30 +10,47 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: path.join(__dirname, "preload.js"),
+    },
   });
 
-  ipcMain.on('set-title', (event, title) => {
-    const webContents = event.sender
-    const win = BrowserWindow.fromWebContents(webContents)
-    win.setTitle(title)
-  })
+  ipcMain.on("set-title", (event, title) => {
+    const webContents = event.sender;
+    const win = BrowserWindow.fromWebContents(webContents);
+    win.setTitle(title);
+  });
+
+  const menu = Menu.buildFromTemplate([
+    {
+      label: app.name,
+      submenu: [
+        {
+          click: () => win.webContents.send("update-counter", 1),
+          label: "Increment",
+        },
+        {
+          click: () => win.webContents.send("update-counter", -1),
+          label: "Decrement",
+        },
+      ],
+    },
+  ]);
+
+  Menu.setApplicationMenu(menu);
 
   //加载文件
   win.loadFile("index.html");
 
   // 直接打开 调试 或者 ctrl+shift+i 、 mac 调试用 openDevTools
   win.webContents.openDevTools();
-
 };
 
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog()
+  const { canceled, filePaths } = await dialog.showOpenDialog();
   if (canceled) {
-    return
+    return;
   } else {
-    return filePaths[0]
+    return filePaths[0];
   }
 }
 
@@ -41,8 +58,10 @@ async function handleFileOpen() {
 //和创建浏览器窗口的时候调用
 //部分 API 在 ready 事件触发后才使用
 app.whenReady().then(() => {
-  ipcMain.handle('dialog:openFile', handleFileOpen)
-
+  ipcMain.handle("dialog:openFile", handleFileOpen);
+  ipcMain.on('counter-value', (_event, value) => {
+    console.log(value) // 将打印到 Node 控制台
+  })
   createWindow();
 
   app.on("activate", () => {
