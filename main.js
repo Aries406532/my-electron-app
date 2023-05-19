@@ -20,15 +20,43 @@ const createWindow = () => {
     win.setTitle(title);
   });
 
+  let child;
   ipcMain.on("create", () => {
-    const child = new BrowserWindow({  
-      width: 400,
-      height: 400,
-      frame:false,
-      parent: win
-    });
-    //加载文件
-    child.loadFile("child.html");
+    if (BrowserWindow.getAllWindows().length === 1) {
+      child = new BrowserWindow({
+        width: 400,
+        height: 400,
+        frame: true,
+        parent: win,
+        webPreferences: {
+          preload: path.join(__dirname, "preload.js"),
+        },
+      });
+      //加载文件
+      child.loadFile("child.html");
+      console.log(child.id, "id");
+      // child.webContents.openDevTools();
+      child.on("closed", () => {
+        child = null;
+      });
+    }
+  });
+
+  ipcMain.on("window-operate", (event, operate) => {
+    const webContents = event.sender;
+    const win = BrowserWindow.fromWebContents(webContents);
+    console.log(win, "win==============",child.id);
+    switch (operate) {
+      case "maximize":
+        win.maximize();
+        break;
+      case "minimize":
+        win.minimize();
+        break;
+      case "colse":
+        win.close()
+        break;
+    }
   });
 
   const menu = Menu.buildFromTemplate([
@@ -53,7 +81,7 @@ const createWindow = () => {
   win.loadFile("index.html");
 
   // 直接打开 调试 或者 ctrl+shift+i 、 mac 调试用 openDevTools
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 };
 
 async function handleFileOpen() {

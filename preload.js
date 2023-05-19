@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
   openFile: () => ipcRenderer.invoke("dialog:openFile"),
   handleCounter: (callback) => ipcRenderer.on("update-counter", callback),
   create: () => ipcRenderer.send("create"),
+  windowOperate: (operate) => ipcRenderer.send("window-operate", operate),
 });

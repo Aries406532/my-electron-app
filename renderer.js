@@ -1,10 +1,11 @@
+//设置窗口title
 const setButton = document.getElementById('set')
 const titleInput = document.getElementById('title')
 setButton.addEventListener('click', () => {
     const title = titleInput.value
     window.electronAPI.setTitle(title)
 });
-
+//上传文件
 const btn = document.getElementById('btn')
 const filePathElement = document.getElementById('filePath')
 
@@ -12,7 +13,7 @@ btn.addEventListener('click', async () => {
   const filePath = await window.electronAPI.openFile()
   filePathElement.innerText = filePath
 })
-
+// 计数
 const counter = document.getElementById('counter')
 
 window.electronAPI.handleCounter((event, value) => {
@@ -21,9 +22,9 @@ window.electronAPI.handleCounter((event, value) => {
   counter.innerText = newValue
   event.sender.send('counter-value', newValue)
 })
-
+//创建新窗口
 const create = document.getElementById('create')
 
 create.addEventListener('click', () => {
-  window.electronAPI.create(title)
+  window.electronAPI.create();
 });
