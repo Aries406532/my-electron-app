@@ -14,11 +14,11 @@ const createWindow = () => {
     },
   });
 
-  ipcMain.on("set-title", (event, title) => {
-    const webContents = event.sender;
-    const win = BrowserWindow.fromWebContents(webContents);
-    win.setTitle(title);
-  });
+ipcMain.on('set-title', (event, title) => {   //监听set-title
+  const webContents = event.sender;   //发送消息的实例
+  const win = BrowserWindow.fromWebContents(webContents);   //返回拥有给定 webContents的窗口
+  win.setTitle(title)
+})
 
   const menu = Menu.buildFromTemplate([
     {
@@ -46,11 +46,11 @@ const createWindow = () => {
 };
 
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog();
+  const { canceled, filePaths } = await dialog.showOpenDialog() //调用 dialog.showOpenDialog
   if (canceled) {
     return;
   } else {
-    return filePaths[0];
+    return filePaths[0]  //返回用户选择的文件路径值
   }
 }
 
