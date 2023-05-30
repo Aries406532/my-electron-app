@@ -10,22 +10,23 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.js"), //预加载脚本
     },
   });
 
-ipcMain.on('set-title', (event, title) => {   //监听set-title
-  const webContents = event.sender;   //发送消息的实例
-  const win = BrowserWindow.fromWebContents(webContents);   //返回拥有给定 webContents的窗口
-  win.setTitle(title)
-})
+  ipcMain.on("set-title", (event, title) => {
+    //监听set-title
+    const webContents = event.sender; //发送消息的实例
+    const win = BrowserWindow.fromWebContents(webContents); //返回拥有给定 webContents的窗口
+    win.setTitle(title);
+  });
 
   const menu = Menu.buildFromTemplate([
     {
       label: app.name,
       submenu: [
         {
-          click: () => win.webContents.send("update-counter", 1),
+          click: () => win.webContents.send("update-counter", 1),   //使用webContents实例包含的send方法
           label: "Increment",
         },
         {
@@ -46,11 +47,11 @@ ipcMain.on('set-title', (event, title) => {   //监听set-title
 };
 
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog() //调用 dialog.showOpenDialog
+  const { canceled, filePaths } = await dialog.showOpenDialog(); //调用 dialog.showOpenDialog
   if (canceled) {
     return;
   } else {
-    return filePaths[0]  //返回用户选择的文件路径值
+    return filePaths[0]; //返回用户选择的文件路径值
   }
 }
 
@@ -58,10 +59,10 @@ async function handleFileOpen() {
 //和创建浏览器窗口的时候调用
 //部分 API 在 ready 事件触发后才使用
 app.whenReady().then(() => {
-  ipcMain.handle("dialog:openFile", handleFileOpen);
-  ipcMain.on('counter-value', (_event, value) => {
-    console.log(value) // 将打印到 Node 控制台
-  })
+  ipcMain.handle("dialog:openFile", handleFileOpen); 
+  ipcMain.on("counter-value", (_event, value) => {
+    console.log(value); // 将打印到 Node 控制台
+  });
   createWindow();
 
   app.on("activate", () => {
