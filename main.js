@@ -10,7 +10,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.js"),  //在页面运行其他脚本之前预先加载指定的脚本
     },
   });
 
