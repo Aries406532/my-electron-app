@@ -29,11 +29,11 @@ const createWindow = () => {
 };
 
 async function handleFileOpen() {
-  const { canceled, filePaths } = await dialog.showOpenDialog()
+  const { canceled, filePaths } = await dialog.showOpenDialog() //调用 dialog.showOpenDialog
   if (canceled) {
     return
   } else {
-    return filePaths[0]
+    return filePaths[0]  //返回用户选择的文件路径值
   }
 }
 
@@ -41,7 +41,7 @@ async function handleFileOpen() {
 //和创建浏览器窗口的时候调用
 //部分 API 在 ready 事件触发后才使用
 app.whenReady().then(() => {
-  ipcMain.handle('dialog:openFile', handleFileOpen)
+  ipcMain.handle('dialog:openFile', handleFileOpen)   
 
   createWindow();
 

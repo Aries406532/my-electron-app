@@ -9,6 +9,6 @@ const btn = document.getElementById('btn');
 const filePathElement = document.getElementById('filePath');
 
 btn.addEventListener('click', async () => {
-  const filePath = await window.electronAPI.openFile();
-  filePathElement.innerText = filePath;
+  const filePath = await window.electronAPI.openFile();   //获取返回的文件路径值
+  filePathElement.innerText = filePath;   //显示文件名
 })
