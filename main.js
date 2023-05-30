@@ -14,9 +14,9 @@ const createWindow = () => {
     }
   });
 
-  ipcMain.on('set-title', (event, title) => {
-    const webContents = event.sender
-    const win = BrowserWindow.fromWebContents(webContents)
+  ipcMain.on('set-title', (event, title) => {   //监听set-title
+    const webContents = event.sender;   //发送消息的实例
+    const win = BrowserWindow.fromWebContents(webContents);   //返回拥有给定 webContents的窗口
     win.setTitle(title)
   })
 
